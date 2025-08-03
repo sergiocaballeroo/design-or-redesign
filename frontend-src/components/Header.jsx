@@ -1,9 +1,47 @@
+import { useState, useEffect } from 'react'
 import './Header.css'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useTranslation } from '../utils/translations'
 
-const Header = ({ cartItemsCount, onCartClick, showNavigation = true, onToggleSidebar, sidebarOpen, language = 'es', onLanguageChange, onGoToHome, onGoToCollection, currentView }) => {
+const Header = ({ cartItemsCount, onCartClick, showNavigation = true, onToggleSidebar, sidebarOpen, language = 'es', onLanguageChange, onGoToHome, onGoToCollection, currentView, onAdminAccess }) => {
   const { t } = useTranslation(language);
+  const [logoTapCount, setLogoTapCount] = useState(0);
+  const [tapTimer, setTapTimer] = useState(null);
+  // Handle logo taps for mobile admin access
+  const handleLogoTap = () => {
+    if (tapTimer) {
+      clearTimeout(tapTimer);
+    }
+    
+    const newCount = logoTapCount + 1;
+    setLogoTapCount(newCount);
+    
+    if (newCount === 7) {
+      // 7 taps reached - trigger admin access
+      setLogoTapCount(0);
+      if (onAdminAccess) {
+        onAdminAccess();
+      }
+      return;
+    }
+    
+    // Reset counter after 2 seconds of no taps
+    const timer = setTimeout(() => {
+      setLogoTapCount(0);
+    }, 2000);
+    
+    setTapTimer(timer);
+  };
+  
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (tapTimer) {
+        clearTimeout(tapTimer);
+      }
+    };
+  }, [tapTimer]);
+
   const navItems = [
     { value: 'inicio', label: t('inicio'), action: onGoToHome },
     { value: 'coleccion', label: t('coleccion'), action: onGoToCollection },
@@ -28,7 +66,7 @@ const Header = ({ cartItemsCount, onCartClick, showNavigation = true, onToggleSi
               </span>
             </button>
           )}
-          <div className="logo">
+          <div className="logo" onClick={handleLogoTap} style={{ cursor: 'pointer', userSelect: 'none' }}>
             <h1>design or redesign</h1>
           </div>
         </div>

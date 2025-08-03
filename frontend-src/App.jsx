@@ -225,6 +225,7 @@ function App() {
           onGoToHome={handleGoToHome}
           onGoToCollection={handleGoToCollection}
           currentView={currentView}
+          onAdminAccess={handleAdminAccess}
         />
 
         <HeroSection 
@@ -266,6 +267,7 @@ function App() {
         onGoToHome={handleGoToHome}
         onGoToCollection={handleGoToCollection}
         currentView={currentView}
+        onAdminAccess={handleAdminAccess}
       />
       
       <div className="main-layout">
