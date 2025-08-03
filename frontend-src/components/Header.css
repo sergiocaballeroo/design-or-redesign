@@ -217,49 +217,71 @@
 }
 
 @media (max-width: 480px) {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    width: 100vw;
+    overflow-x: hidden;
+  }
+  
   .header-container {
-    padding: 0.8rem 2%;
+    padding: 0.6rem 1%;
     flex-wrap: nowrap;
     justify-content: space-between;
+    min-height: 60px;
+    align-items: center;
+    gap: 0.5rem;
   }
   
   .header-left {
-    gap: 0.5rem;
+    gap: 0.3rem;
     flex-shrink: 0;
+    min-width: fit-content;
+  }
+  
+  .sidebar-toggle {
+    padding: 0.3rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .hamburger {
+    width: 18px;
+    height: 14px;
   }
   
   .logo h1 {
-    font-size: 1.1rem;
-  }
-  
-  .navigation {
-    gap: 0.8rem;
-    margin-left: 0.5rem;
-    flex-wrap: nowrap;
-  }
-  
-  .nav-button {
-    font-size: 0.75rem;
-    padding: 0.3rem 0;
+    font-size: 1rem;
+    margin: 0;
     white-space: nowrap;
   }
   
+  .navigation {
+    display: none;
+  }
+  
   .cart-section {
-    gap: 0.6rem;
+    gap: 0.4rem;
     flex-shrink: 0;
+    min-width: fit-content;
   }
   
   .cart-button {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+    min-width: fit-content;
   }
   
   .language-switcher {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+    min-width: fit-content;
   }
   
   .lang-btn {
-    padding: 0.15rem 0.25rem;
-    font-size: 0.7rem;
+    padding: 0.1rem 0.2rem;
+    font-size: 0.65rem;
+    min-width: 20px;
+    text-align: center;
   }
 }
