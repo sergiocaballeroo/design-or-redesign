@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './ImageUpload.css'
+import { API_BASE_URL } from '../config/api'
 
 const ImageUpload = ({ onImageUploaded, token }) => {
   const [isUploading, setIsUploading] = useState(false)
@@ -30,7 +31,7 @@ const ImageUpload = ({ onImageUploaded, token }) => {
       const formData = new FormData()
       formData.append('image', file)
 
-      const response = await fetch('http://localhost:3003/api/upload', {
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: 'POST',
         body: formData
       })
@@ -38,7 +39,7 @@ const ImageUpload = ({ onImageUploaded, token }) => {
       const data = await response.json()
 
       if (response.ok) {
-        onImageUploaded(`http://localhost:3003${data.url}`)
+        onImageUploaded(`${API_BASE_URL}${data.url}`)
       } else {
         setUploadError(data.error || 'Error al subir la imagen')
       }

@@ -1,5 +1,5 @@
 // API Configuration
-const isDevelopment = import.meta.env.DEV;
+const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost';
 
 export const API_BASE_URL = isDevelopment 
   ? 'http://localhost:3003'

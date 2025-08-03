@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './ProductDetail.css'
 import Header from './Header'
 import { useTranslation } from '../utils/translations'
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api'
 
 const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick, language = 'es' }) => {
   const { t, translateProduct } = useTranslation(language);
@@ -18,7 +19,7 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
   const fetchProduct = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`http://localhost:3003/api/products/${productId}`)
+      const response = await fetch(`${API_ENDPOINTS.products}/${productId}`)
       if (response.ok) {
         const data = await response.json()
         console.log('Product data received:', data)
@@ -135,7 +136,7 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
                 <img 
                   src={getProductImages()[selectedImageIndex].startsWith('http') 
                     ? `${getProductImages()[selectedImageIndex]}?t=${Date.now()}` 
-                    : `http://localhost:3003${getProductImages()[selectedImageIndex]}?t=${Date.now()}`}
+                    : `${API_BASE_URL}${getProductImages()[selectedImageIndex]}?t=${Date.now()}`}
                   alt={`${product.name} - Imagen ${selectedImageIndex + 1}`}
                   className="detail-product-img"
                   onError={(e) => {
@@ -181,7 +182,7 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
                   onClick={() => setSelectedImageIndex(index)}
                 >
                   <img 
-                    src={image.startsWith('http') ? image : `http://localhost:3003${image}`}
+                    src={image.startsWith('http') ? image : `${API_BASE_URL}${image}`}
                     alt={`${product.name} thumbnail ${index + 1}`}
                     className="thumbnail-img"
                     onError={(e) => {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './ProductGrid.css'
 import { useTranslation } from '../utils/translations'
+import { API_BASE_URL } from '../config/api'
 
 const ProductCard = ({ product, onAddToCart, onProductClick, language = 'es' }) => {
   const { translateProduct, t } = useTranslation(language);
@@ -25,7 +26,7 @@ const ProductCard = ({ product, onAddToCart, onProductClick, language = 'es' }) 
           <img 
             src={product.images[0].startsWith('http') 
               ? `${product.images[0]}?t=${Date.now()}` 
-              : `http://localhost:3003${product.images[0]}?t=${Date.now()}`}
+              : `${API_BASE_URL}${product.images[0]}?t=${Date.now()}`}
             alt={product.name}
             className="product-img"
             onError={(e) => {

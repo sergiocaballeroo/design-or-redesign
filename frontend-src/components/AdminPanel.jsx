@@ -92,7 +92,7 @@ const AdminPanel = ({ token }) => {
     try {
       let response
       if (editingProduct) {
-        response = await fetch(`http://localhost:3003/api/admin/products/${editingProduct.id}`, {
+        response = await fetch(`${API_ENDPOINTS.products}/${editingProduct.id}`, {
           method: 'PUT',
           headers: { 
             'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const AdminPanel = ({ token }) => {
           body: JSON.stringify(productData)
         })
       } else {
-        response = await fetch('http://localhost:3003/api/admin/products', {
+        response = await fetch(API_ENDPOINTS.products, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ const AdminPanel = ({ token }) => {
   const handleDelete = async (productId) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
       try {
-        await fetch(`http://localhost:3003/api/admin/products/${productId}`, {
+        await fetch(`${API_ENDPOINTS.products}/${productId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
