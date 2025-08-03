@@ -7,7 +7,7 @@ import SizeGuide from './SizeGuide'
 import { useTranslation } from '../utils/translations'
 import { API_ENDPOINTS, API_BASE_URL } from '../config/api'
 
-const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick, language = 'es' }) => {
+const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick, language = 'es', onLanguageChange }) => {
   const navigate = useNavigate()
   const { t, translateProduct } = useTranslation(language);
   const [product, setProduct] = useState(null)
@@ -106,7 +106,7 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
         cartItemsCount={cartItems ? cartItems.reduce((sum, item) => sum + item.quantity, 0) : 0}
         onCartClick={onCartClick}
         language={language}
-        onLanguageChange={() => {}}
+        onLanguageChange={onLanguageChange}
         onGoToHome={() => navigate('/')}
         onGoToCollection={() => navigate('/coleccion')}
         currentPath={window.location.pathname}

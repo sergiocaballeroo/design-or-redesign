@@ -278,6 +278,7 @@ function App() {
           cartItems={cartItems}
           onCartClick={() => setIsCartOpen(true)}
           language={language}
+          onLanguageChange={handleLanguageChange}
         />
       </div>
     )
