@@ -6,13 +6,13 @@
   "scripts": {
     "start": "node fullstack-server.js",
     "dev": "node fullstack-server.js",
-    "build": "vite build",
+    "build": "npx vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["ecommerce", "streetwear", "fullstack"],
   "author": "design or redesign",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",

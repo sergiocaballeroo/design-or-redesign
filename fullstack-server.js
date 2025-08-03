@@ -1,13 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs').promises;
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { promises as fs } from 'fs';
+import sqlite3 from 'sqlite3';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -43,7 +48,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database setup
-const db = new sqlite3.Database('./products.db', (err) => {
+const db = new sqlite3.verbose().Database('./products.db', (err) => {
   if (err) {
     console.error('Error opening database:', err);
   } else {
