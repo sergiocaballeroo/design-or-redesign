@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { promises as fs } from 'fs';
-import sqlite3 from 'sqlite3';
+import pkg from 'sqlite3';
+const { Database } = pkg;
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
@@ -48,7 +49,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database setup
-const db = new sqlite3.verbose().Database('./products.db', (err) => {
+const sqlite3 = pkg.verbose();
+const db = new Database('./products.db', (err) => {
   if (err) {
     console.error('Error opening database:', err);
   } else {
