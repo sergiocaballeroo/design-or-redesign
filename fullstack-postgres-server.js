@@ -159,7 +159,8 @@ app.get('/api/products', async (req, res) => {
     const products = result.rows.map(product => ({
       ...product,
       images: product.images ? JSON.parse(product.images).map(convertToStaticS3Url) : [],
-      sizes: product.sizes ? JSON.parse(product.sizes) : []
+      sizes: product.sizes ? JSON.parse(product.sizes) : [],
+      inStock: product.instock // Map database field to frontend expected field
     }));
     
     res.json(products);
@@ -182,7 +183,8 @@ app.get('/api/products/:id', async (req, res) => {
     const product = {
       ...result.rows[0],
       images: result.rows[0].images ? JSON.parse(result.rows[0].images).map(convertToStaticS3Url) : [],
-      sizes: result.rows[0].sizes ? JSON.parse(result.rows[0].sizes) : []
+      sizes: result.rows[0].sizes ? JSON.parse(result.rows[0].sizes) : [],
+      inStock: result.rows[0].instock // Map database field to frontend expected field
     };
     
     res.json(product);
@@ -195,7 +197,7 @@ app.get('/api/products/:id', async (req, res) => {
 // Add new product
 app.post('/api/products', authenticateToken, upload.array('images', 5), async (req, res) => {
   try {
-    const { name, price, description, sizes, images: manualImages } = req.body;
+    const { name, price, description, sizes, images: manualImages, inStock = true } = req.body;
     
     let images = [];
     
@@ -213,14 +215,15 @@ app.post('/api/products', authenticateToken, upload.array('images', 5), async (r
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes || [];
     
     const result = await pool.query(
-      'INSERT INTO products (name, price, description, images, sizes) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [name, parseFloat(price), description, JSON.stringify(images), JSON.stringify(parsedSizes)]
+      'INSERT INTO products (name, price, description, images, sizes, instock) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, parseFloat(price), description, JSON.stringify(images), JSON.stringify(parsedSizes), inStock]
     );
     
     const product = {
       ...result.rows[0],
       images,
-      sizes: parsedSizes
+      sizes: parsedSizes,
+      inStock: result.rows[0].instock // Map database field to frontend expected field
     };
     
     res.status(201).json({
@@ -270,15 +273,19 @@ app.put('/api/products/:id', authenticateToken, upload.array('images', 5), async
     
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes || [];
     
+    // Handle inStock field if provided
+    const inStockValue = req.body.inStock !== undefined ? req.body.inStock : existingProduct.instock;
+    
     const result = await pool.query(
-      'UPDATE products SET name = $1, price = $2, description = $3, images = $4, sizes = $5 WHERE id = $6 RETURNING *',
-      [name, parseFloat(price), description, JSON.stringify(images), JSON.stringify(parsedSizes), id]
+      'UPDATE products SET name = $1, price = $2, description = $3, images = $4, sizes = $5, instock = $6 WHERE id = $7 RETURNING *',
+      [name, parseFloat(price), description, JSON.stringify(images), JSON.stringify(parsedSizes), inStockValue, id]
     );
     
     const product = {
       ...result.rows[0],
       images,
-      sizes: parsedSizes
+      sizes: parsedSizes,
+      inStock: result.rows[0].instock // Map database field to frontend expected field
     };
     
     res.json({
@@ -288,6 +295,38 @@ app.put('/api/products/:id', authenticateToken, upload.array('images', 5), async
   } catch (error) {
     console.error('Error updating product:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Update product stock status
+app.patch('/api/products/:id/stock', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { inStock } = req.body;
+    
+    const result = await pool.query(
+      'UPDATE products SET instock = $1 WHERE id = $2 RETURNING *',
+      [inStock, id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    const product = {
+      ...result.rows[0],
+      images: result.rows[0].images ? JSON.parse(result.rows[0].images).map(convertToStaticS3Url) : [],
+      sizes: result.rows[0].sizes ? JSON.parse(result.rows[0].sizes) : [],
+      inStock: result.rows[0].instock
+    };
+    
+    res.json({
+      ...product,
+      message: 'Stock status updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating stock:', error);
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
