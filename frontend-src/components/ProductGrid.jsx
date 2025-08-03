@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import './ProductGrid.css'
-import StockIndicator from './StockIndicator'
 import { useTranslation } from '../utils/translations'
 import { API_BASE_URL } from '../config/api'
 
@@ -23,12 +22,6 @@ const ProductCard = ({ product, onAddToCart, onProductClick, language = 'es' }) 
         className="product-image"
         onClick={() => onProductClick(product.id)}
       >
-        {/* Stock indicator */}
-        <StockIndicator 
-          stock={product.stock || Math.floor(Math.random() * 15)} // Simulado por ahora
-          className="card-variant"
-          language={language}
-        />
         
         {product.images && product.images.length > 0 ? (
           <img 

@@ -4,7 +4,6 @@ import './ProductDetail.css'
 import Header from './Header'
 import ImageZoom from './ImageZoom'
 import SizeGuide from './SizeGuide'
-import StockIndicator from './StockIndicator'
 import { useTranslation } from '../utils/translations'
 import { API_ENDPOINTS, API_BASE_URL } from '../config/api'
 
@@ -199,13 +198,7 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
         <div className="product-info">
           <div className="product-header">
             <h1>{translateProduct(product.name)}</h1>
-            <div className="price-stock-container">
-              <p className="product-price">${product.price}</p>
-              <StockIndicator 
-                stock={product.stock || Math.floor(Math.random() * 15)} // Simulado por ahora
-                language={language}
-              />
-            </div>
+            <p className="product-price">${product.price}</p>
             
             {!product.inStock && (
               <div className="out-of-stock-badge">{t('agotado')}</div>
