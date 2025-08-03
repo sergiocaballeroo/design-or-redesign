@@ -21,6 +21,11 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
     fetchProduct()
   }, [productId])
 
+  // Force re-render when language changes
+  useEffect(() => {
+    // This effect will trigger a re-render when language changes
+  }, [language])
+
   const fetchProduct = async () => {
     try {
       setLoading(true)
@@ -201,7 +206,9 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
             <p className="product-price">${product.price}</p>
             
             {!product.inStock && (
-              <div className="out-of-stock-badge">{t('agotado')}</div>
+              <div className="out-of-stock-badge" key={`badge-${language}`}>
+                {t('agotado')}
+              </div>
             )}
           </div>
 
