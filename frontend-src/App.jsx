@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import ProductGrid from './components/ProductGrid'
@@ -12,6 +13,8 @@ import HeroSection from './components/HeroSection'
 import { API_ENDPOINTS } from './config/api'
 
 function App() {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [products, setProducts] = useState([])
   const [cartItems, setCartItems] = useState([])
   const [selectedFilters, setSelectedFilters] = useState({
@@ -20,8 +23,6 @@ function App() {
     talla: 'Todas'
   })
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const [currentView, setCurrentView] = useState('home') // 'home', 'shop', 'admin', or 'product'
-  const [selectedProductId, setSelectedProductId] = useState(null)
   const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'))
   const [showAdminLogin, setShowAdminLogin] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -91,30 +92,26 @@ function App() {
   }
 
   const handleProductClick = (productId) => {
-    setSelectedProductId(productId)
-    setCurrentView('product')
+    navigate(`/producto/${productId}`)
   }
 
   const handleBackToShop = () => {
-    setCurrentView('shop')
-    setSelectedProductId(null)
+    navigate('/coleccion')
     // Refrescar productos al volver del admin o producto detalle
     fetchProducts()
   }
 
   const handleGoToCollection = () => {
-    setCurrentView('shop')
+    navigate('/coleccion')
   }
 
   const handleGoToHome = () => {
-    setCurrentView('home')
+    navigate('/')
   }
 
   const handleAdminAccess = () => {
-    // Usar combinación de teclas especial para acceso (Ctrl+Shift+A+D+M)
-    // También podríamos usar una URL especial como /admin-access-secret
     if (adminToken) {
-      setCurrentView('admin')
+      navigate('/admin')
     } else {
       setShowAdminLogin(true)
     }
@@ -123,13 +120,13 @@ function App() {
   const handleLoginSuccess = (token) => {
     setAdminToken(token)
     setShowAdminLogin(false)
-    setCurrentView('admin')
+    navigate('/admin')
   }
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
     setAdminToken(null)
-    setCurrentView('shop')
+    navigate('/coleccion')
   }
 
   const handleLanguageChange = (newLanguage) => {
@@ -138,7 +135,7 @@ function App() {
   }
 
   const handleViewCollection = () => {
-    setCurrentView('shop')
+    navigate('/coleccion')
   }
 
   // Listener para combinación de teclas secreta (Ctrl+Shift+A+D+M)
@@ -172,90 +169,48 @@ function App() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [adminToken])
 
-  if (currentView === 'admin' && adminToken) {
-    return (
-      <div className="app">
-        <div className="admin-nav">
-          <button 
-            className="nav-back-btn"
-            onClick={() => {
-              setCurrentView('home')
-              fetchProducts() // Refrescar productos al salir del admin
-            }}
-          >
-            ← Volver al Inicio
-          </button>
-          <button 
-            className="logout-btn"
-            onClick={handleLogout}
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-        <AdminPanel token={adminToken} />
-      </div>
-    )
-  }
+  // Componente para la página de inicio
+  const HomePage = () => (
+    <div className="app">
+      <Header 
+        cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+        onCartClick={() => setIsCartOpen(true)}
+        showNavigation={true}
+        language={language}
+        onLanguageChange={handleLanguageChange}
+        onGoToHome={handleGoToHome}
+        onGoToCollection={handleGoToCollection}
+        currentPath={location.pathname}
+        onAdminAccess={handleAdminAccess}
+      />
 
-  if (currentView === 'product' && selectedProductId) {
-    return (
-      <div className="app">
-        <ProductDetail 
-          productId={selectedProductId}
-          onBack={handleBackToShop}
-          onAddToCart={addToCart}
-          cartItems={cartItems}
-          onCartClick={() => setIsCartOpen(true)}
-          language={language}
+      <HeroSection 
+        language={language}
+        onViewCollection={handleViewCollection}
+      />
+
+      <Cart 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        onRemoveItem={removeFromCart}
+        onUpdateQuantity={updateQuantity}
+        language={language}
+      />
+
+      <Footer language={language} />
+      
+      {showAdminLogin && (
+        <AdminLogin 
+          onLoginSuccess={handleLoginSuccess}
+          onClose={() => setShowAdminLogin(false)}
         />
-      </div>
-    )
-  }
+      )}
+    </div>
+  )
 
-  // Vista Home
-  if (currentView === 'home') {
-    return (
-      <div className="app">
-        <Header 
-          cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-          onCartClick={() => setIsCartOpen(true)}
-          showNavigation={true}
-          language={language}
-          onLanguageChange={handleLanguageChange}
-          onGoToHome={handleGoToHome}
-          onGoToCollection={handleGoToCollection}
-          currentView={currentView}
-          onAdminAccess={handleAdminAccess}
-        />
-
-        <HeroSection 
-          language={language}
-          onViewCollection={handleViewCollection}
-        />
-
-        <Cart 
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          items={cartItems}
-          onRemoveItem={removeFromCart}
-          onUpdateQuantity={updateQuantity}
-          language={language}
-        />
-
-        <Footer language={language} />
-        
-        {showAdminLogin && (
-          <AdminLogin 
-            onLoginSuccess={handleLoginSuccess}
-            onClose={() => setShowAdminLogin(false)}
-          />
-        )}
-      </div>
-    )
-  }
-
-  // Vista Shop (Colección)
-  return (
+  // Componente para la página de colección
+  const CollectionPage = () => (
     <div className="app">
       <Header 
         cartItemsCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
@@ -266,7 +221,7 @@ function App() {
         onLanguageChange={handleLanguageChange}
         onGoToHome={handleGoToHome}
         onGoToCollection={handleGoToCollection}
-        currentView={currentView}
+        currentPath={location.pathname}
         onAdminAccess={handleAdminAccess}
       />
       
@@ -307,6 +262,64 @@ function App() {
         />
       )}
     </div>
+  )
+
+  // Componente para la página de producto
+  const ProductPage = () => {
+    const productId = parseInt(location.pathname.split('/')[2])
+    return (
+      <div className="app">
+        <ProductDetail 
+          productId={productId}
+          onBack={handleBackToShop}
+          onAddToCart={addToCart}
+          cartItems={cartItems}
+          onCartClick={() => setIsCartOpen(true)}
+          language={language}
+        />
+      </div>
+    )
+  }
+
+  // Componente para la página de admin
+  const AdminPage = () => {
+    if (!adminToken) {
+      navigate('/')
+      return null
+    }
+    
+    return (
+      <div className="app">
+        <div className="admin-nav">
+          <button 
+            className="nav-back-btn"
+            onClick={() => {
+              navigate('/')
+              fetchProducts() // Refrescar productos al salir del admin
+            }}
+          >
+            ← Volver al Inicio
+          </button>
+          <button 
+            className="logout-btn"
+            onClick={handleLogout}
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+        <AdminPanel token={adminToken} />
+      </div>
+    )
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/coleccion" element={<CollectionPage />} />
+      <Route path="/producto/:id" element={<ProductPage />} />
+      <Route path="/admin" element={<AdminPage />} />
+      <Route path="*" element={<HomePage />} />
+    </Routes>
   )
 }
 

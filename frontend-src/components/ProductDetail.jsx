@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ProductDetail.css'
 import Header from './Header'
 import { useTranslation } from '../utils/translations'
 import { API_ENDPOINTS, API_BASE_URL } from '../config/api'
 
 const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick, language = 'es' }) => {
+  const navigate = useNavigate()
   const { t, translateProduct } = useTranslation(language);
   const [product, setProduct] = useState(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
@@ -100,29 +102,24 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
       <Header 
         cartItemsCount={cartItems ? cartItems.reduce((sum, item) => sum + item.quantity, 0) : 0}
         onCartClick={onCartClick}
-        selectedCategory="all"
         language={language}
         onLanguageChange={() => {}}
-        onCategoryChange={() => {
-          // Asegurar que navegamos al puerto correcto
-          const currentPort = window.location.port;
-          if (currentPort !== '5173') {
-            window.location.href = `http://localhost:5173${window.location.pathname}`;
-          } else {
-            onBack();
-          }
-        }}
+        onGoToHome={() => navigate('/')}
+        onGoToCollection={() => navigate('/coleccion')}
+        currentPath={window.location.pathname}
+        onAdminAccess={() => {}}
+        showNavigation={true}
       />
       
       <div className="product-detail">
         <div className="product-detail-header">
-          <button onClick={onBack} className="back-button">
+          <button onClick={() => navigate('/coleccion')} className="back-button">
             ← {t('volverCatalogo')}
           </button>
           <div className="breadcrumb">
-            <span>{t('inicio')}</span>
+            <button onClick={() => navigate('/')}>{t('inicio')}</button>
             <span>/</span>
-            <span>{translateProduct(product.category)}</span>
+            <button onClick={() => navigate('/coleccion')}>{translateProduct(product.category)}</button>
             <span>/</span>
             <span>{translateProduct(product.name)}</span>
           </div>

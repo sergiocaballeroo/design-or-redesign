@@ -9,7 +9,11 @@
     "build": "npx vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["ecommerce", "streetwear", "fullstack"],
+  "keywords": [
+    "ecommerce",
+    "streetwear",
+    "fullstack"
+  ],
   "author": "design or redesign",
   "license": "ISC",
   "type": "module",
@@ -26,10 +30,11 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "pg": "^8.11.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^7.7.1",
     "sharp": "^0.34.3",
-    "pg": "^8.11.0",
     "sqlite3": "^5.1.7",
     "vite": "^7.0.4"
   }

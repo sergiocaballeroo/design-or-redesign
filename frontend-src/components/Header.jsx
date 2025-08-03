@@ -3,7 +3,7 @@ import './Header.css'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useTranslation } from '../utils/translations'
 
-const Header = ({ cartItemsCount, onCartClick, showNavigation = true, onToggleSidebar, sidebarOpen, language = 'es', onLanguageChange, onGoToHome, onGoToCollection, currentView, onAdminAccess }) => {
+const Header = ({ cartItemsCount, onCartClick, showNavigation = true, onToggleSidebar, sidebarOpen, language = 'es', onLanguageChange, onGoToHome, onGoToCollection, currentPath, onAdminAccess }) => {
   const { t } = useTranslation(language);
   const [logoTapCount, setLogoTapCount] = useState(0);
   const [tapTimer, setTapTimer] = useState(null);
@@ -76,7 +76,12 @@ const Header = ({ cartItemsCount, onCartClick, showNavigation = true, onToggleSi
             {navItems.map(item => (
               <button
                 key={item.value}
-                className="nav-button"
+                className={`nav-button ${
+                  (item.value === 'inicio' && currentPath === '/') ||
+                  (item.value === 'coleccion' && currentPath === '/coleccion')
+                    ? 'active' 
+                    : ''
+                }`}
                 onClick={item.action}
               >
                 {item.label}

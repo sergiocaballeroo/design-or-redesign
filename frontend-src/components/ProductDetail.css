@@ -87,6 +87,23 @@
   gap: 0.5rem;
 }
 
+.breadcrumb button {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb button:hover {
+  color: #2c2c2c;
+  opacity: 1;
+}
+
 .breadcrumb span:last-child {
   color: #2c2c2c;
   font-weight: 400;
