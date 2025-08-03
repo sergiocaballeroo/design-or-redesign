@@ -2,9 +2,9 @@
   "name": "retro-clothing-fullstack",
   "version": "1.0.0",
   "description": "design or redesign - Fullstack e-commerce app",
-  "main": "fullstack-server.js",
+  "main": "fullstack-postgres-server.js",
   "scripts": {
-    "start": "node fullstack-server.js",
+    "start": "node fullstack-postgres-server.js",
     "dev": "node fullstack-server.js",
     "build": "npx vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,6 +29,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sharp": "^0.34.3",
+    "pg": "^8.11.0",
     "sqlite3": "^5.1.7",
     "vite": "^7.0.4"
   }
