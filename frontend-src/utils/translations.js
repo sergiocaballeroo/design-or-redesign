@@ -22,6 +22,13 @@ export const translations = {
     todos: 'Todos',
     todas: 'Todas',
     
+    // Advanced Search
+    buscarProductos: 'Buscar productos...',
+    precio: 'Precio',
+    colores: 'Colores',
+    categoria: 'Categoría',
+    limpiarFiltros: 'Limpiar filtros',
+    
     // Footer
     brandDescription: 'Moda minimalista y vintage para el individuo moderno',
     tienda: 'Tienda',
@@ -49,6 +56,8 @@ export const translations = {
     agregarCarrito: 'Agregar al carrito',
     seleccionaTalla: 'Selecciona una talla',
     agotado: 'Agotado',
+    disponible: 'Disponible',
+    ultimasPiezas: 'Últimas piezas',
     
     // Cart
     carrito: 'Carrito',
@@ -111,6 +120,13 @@ export const translations = {
     todos: 'All',
     todas: 'All',
     
+    // Advanced Search
+    buscarProductos: 'Search products...',
+    precio: 'Price',
+    colores: 'Colors',
+    categoria: 'Category',
+    limpiarFiltros: 'Clear filters',
+    
     // Footer
     brandDescription: 'Minimalist vintage fashion for the modern individual',
     tienda: 'Shop',
@@ -138,6 +154,8 @@ export const translations = {
     agregarCarrito: 'Add to cart',
     seleccionaTalla: 'Select a size',
     agotado: 'Out of stock',
+    disponible: 'Available',
+    ultimasPiezas: 'Last pieces',
     
     // Cart
     carrito: 'Cart',

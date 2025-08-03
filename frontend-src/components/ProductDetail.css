@@ -316,11 +316,19 @@
   line-height: 1.2;
 }
 
+.price-stock-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
 .product-price {
   font-size: 2rem;
   font-weight: 200;
   color: #2c2c2c;
-  margin-bottom: 1rem;
+  margin: 0;
   letter-spacing: -0.01em;
 }
 
@@ -407,6 +415,35 @@
 
 .size-selection {
   margin-bottom: 2.5rem;
+}
+
+.size-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.size-guide-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f8f8f8;
+  border: 1px solid #e5e5e5;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.size-guide-button:hover {
+  background: #2c2c2c;
+  color: white;
+  border-color: #2c2c2c;
+  opacity: 1;
 }
 
 .sizes {

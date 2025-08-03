@@ -1,0 +1,117 @@
+.stock-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.stock-icon {
+  font-size: 0.9rem;
+}
+
+.stock-text {
+  white-space: nowrap;
+}
+
+/* Estados de stock */
+.stock-indicator.in-stock {
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4f4d4 100%);
+  color: #2d5a2d;
+  border: 1px solid #a8d4a8;
+}
+
+.stock-indicator.low-stock {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
+  border: 1px solid #ffc107;
+  animation: lowStockPulse 2s infinite;
+}
+
+.stock-indicator.out-of-stock {
+  background: linear-gradient(135deg, #ffeaea 0%, #ffcccc 100%);
+  color: #8b2635;
+  border: 1px solid #dc3545;
+}
+
+/* Animación de urgencia */
+@keyframes lowStockPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(255, 193, 7, 0);
+  }
+}
+
+.urgency-pulse {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 22px;
+  border: 2px solid #ffc107;
+  animation: urgencyRing 1.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes urgencyRing {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+/* Variante para tarjetas de productos */
+.stock-indicator.card-variant {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  z-index: 5;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.6rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stock-indicator {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .stock-indicator.card-variant {
+    top: 0.5rem;
+    left: 0.5rem;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-indicator {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .stock-text {
+    font-size: 0.65rem;
+  }
+  
+  .stock-icon {
+    font-size: 0.8rem;
+  }
+}

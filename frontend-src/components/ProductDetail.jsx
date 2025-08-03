@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './ProductDetail.css'
 import Header from './Header'
+import ImageZoom from './ImageZoom'
+import SizeGuide from './SizeGuide'
+import StockIndicator from './StockIndicator'
 import { useTranslation } from '../utils/translations'
 import { API_ENDPOINTS, API_BASE_URL } from '../config/api'
 
@@ -13,6 +16,7 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
   const [selectedSize, setSelectedSize] = useState('')
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
+  const [showSizeGuide, setShowSizeGuide] = useState(false)
 
   useEffect(() => {
     fetchProduct()
@@ -130,16 +134,12 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
           <div className="main-image-container">
             <div className="main-image">
               {getProductImages().length > 0 ? (
-                <img 
+                <ImageZoom
                   src={getProductImages()[selectedImageIndex].startsWith('http') 
                     ? `${getProductImages()[selectedImageIndex]}?t=${Date.now()}` 
                     : `${API_BASE_URL}${getProductImages()[selectedImageIndex]}?t=${Date.now()}`}
                   alt={`${product.name} - Imagen ${selectedImageIndex + 1}`}
                   className="detail-product-img"
-                  onError={(e) => {
-                    e.target.style.display = 'none'
-                    e.target.nextSibling.style.display = 'flex'
-                  }}
                 />
               ) : null}
               <div className="placeholder-image" style={{ display: getProductImages().length > 0 ? 'none' : 'flex' }}>
@@ -199,7 +199,13 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
         <div className="product-info">
           <div className="product-header">
             <h1>{translateProduct(product.name)}</h1>
-            <p className="product-price">${product.price}</p>
+            <div className="price-stock-container">
+              <p className="product-price">${product.price}</p>
+              <StockIndicator 
+                stock={product.stock || Math.floor(Math.random() * 15)} // Simulado por ahora
+                language={language}
+              />
+            </div>
             
             {!product.inStock && (
               <div className="out-of-stock-badge">{t('agotado')}</div>
@@ -224,7 +230,15 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
           {product.inStock && (
             <div className="product-purchase">
               <div className="size-selection">
-                <h3>{t('seleccionarTalla')}</h3>
+                <div className="size-header">
+                  <h3>{t('seleccionarTalla')}</h3>
+                  <button 
+                    className="size-guide-button"
+                    onClick={() => setShowSizeGuide(true)}
+                  >
+                    📏 {t('guiaTallas')}
+                  </button>
+                </div>
                 <div className="sizes">
                   {product.sizes && product.sizes.length > 0 ? product.sizes.map(size => (
                     <button
@@ -274,6 +288,14 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
         </div>
       </div>
       </div>
+      
+      {/* Guía de tallas modal */}
+      <SizeGuide
+        isOpen={showSizeGuide}
+        onClose={() => setShowSizeGuide(false)}
+        category={product?.category === 'tops' ? 'tops' : 'bottoms'}
+        language={language}
+      />
     </div>
   )
 }

@@ -10,17 +10,26 @@ import ProductDetail from './components/ProductDetail'
 import AdminLogin from './components/AdminLogin'
 import Sidebar from './components/Sidebar'
 import HeroSection from './components/HeroSection'
+import AdvancedSearch from './components/AdvancedSearch'
 import { API_ENDPOINTS } from './config/api'
 
 function App() {
   const navigate = useNavigate()
   const location = useLocation()
   const [products, setProducts] = useState([])
+  const [filteredProducts, setFilteredProducts] = useState([])
   const [cartItems, setCartItems] = useState([])
   const [selectedFilters, setSelectedFilters] = useState({
     coleccion: 'Todos',
     corte: 'Todos', 
     talla: 'Todas'
+  })
+  const [searchTerm, setSearchTerm] = useState('')
+  const [advancedFilters, setAdvancedFilters] = useState({
+    priceRange: { min: 0, max: 1000 },
+    colors: [],
+    styles: [],
+    sizes: []
   })
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'))
@@ -40,6 +49,11 @@ function App() {
     fetchProducts()
   }, [selectedFilters])
 
+  // Aplicar filtros avanzados cuando cambien products, searchTerm o advancedFilters
+  useEffect(() => {
+    applyAdvancedFilters()
+  }, [products, searchTerm, advancedFilters, selectedFilters])
+
   const fetchProducts = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.products)
@@ -48,6 +62,74 @@ function App() {
     } catch (error) {
       console.error('Error fetching products:', error)
     }
+  }
+
+  const applyAdvancedFilters = () => {
+    let filtered = [...products]
+
+    // Filtrar por términos de búsqueda
+    if (searchTerm) {
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // Filtrar por rango de precio
+    if (advancedFilters.priceRange) {
+      filtered = filtered.filter(product => 
+        product.price >= advancedFilters.priceRange.min && 
+        product.price <= advancedFilters.priceRange.max
+      )
+    }
+
+    // Filtrar por colores (simulado por ahora)
+    if (advancedFilters.colors.length > 0) {
+      // Por ahora mantener todos los productos ya que no tenemos colores reales
+      // En el futuro esto filtraría por colores reales del producto
+    }
+
+    // Filtrar por estilos/categorías
+    if (advancedFilters.styles.length > 0) {
+      filtered = filtered.filter(product => 
+        advancedFilters.styles.includes(product.category)
+      )
+    }
+
+    // Filtrar por tallas
+    if (advancedFilters.sizes.length > 0) {
+      filtered = filtered.filter(product => 
+        product.sizes && product.sizes.some(size => 
+          advancedFilters.sizes.includes(size)
+        )
+      )
+    }
+
+    // Aplicar filtros del sidebar existente
+    if (selectedFilters.coleccion !== 'Todos') {
+      // Lógica para filtros de colección si se implementa
+    }
+
+    if (selectedFilters.corte !== 'Todos') {
+      // Lógica para filtros de corte si se implementa
+    }
+
+    if (selectedFilters.talla !== 'Todas') {
+      filtered = filtered.filter(product => 
+        product.sizes && product.sizes.includes(selectedFilters.talla)
+      )
+    }
+
+    setFilteredProducts(filtered)
+  }
+
+  const handleAdvancedSearch = (term) => {
+    setSearchTerm(term)
+  }
+
+  const handleAdvancedFilters = (filters) => {
+    setAdvancedFilters(filters)
   }
 
   const handleFilterChange = (filterType, value) => {
@@ -235,8 +317,14 @@ function App() {
         />
         
         <main className={`main-content ${sidebarOpen ? 'sidebar-open' : ''}`}>
+          <AdvancedSearch
+            onSearch={handleAdvancedSearch}
+            onFiltersChange={handleAdvancedFilters}
+            language={language}
+            products={products}
+          />
           <ProductGrid 
-            products={products} 
+            products={filteredProducts.length > 0 || searchTerm || advancedFilters.colors.length > 0 || advancedFilters.styles.length > 0 || advancedFilters.sizes.length > 0 ? filteredProducts : products} 
             onAddToCart={addToCart}
             onProductClick={handleProductClick}
             language={language}
