@@ -227,32 +227,34 @@ const ProductDetail = ({ productId, onBack, onAddToCart, cartItems, onCartClick,
             </div>
           )}
 
+          <div className="size-selection">
+            <div className="size-header">
+              <h3>{t('seleccionarTalla')}</h3>
+              <button 
+                className="size-guide-button"
+                onClick={() => setShowSizeGuide(true)}
+              >
+                📏 {t('guiaTallas')}
+              </button>
+            </div>
+            <div className="sizes">
+              {product.sizes && product.sizes.length > 0 ? product.sizes.map(size => (
+                <button
+                  key={size}
+                  className={`size-button ${selectedSize === size ? 'selected' : ''} ${!product.inStock ? 'disabled' : ''}`}
+                  onClick={() => product.inStock && setSelectedSize(size)}
+                  disabled={!product.inStock}
+                >
+                  {size}
+                </button>
+              )) : (
+                <p>{language === 'es' ? 'No hay tallas disponibles' : 'No sizes available'}</p>
+              )}
+            </div>
+          </div>
+
           {product.inStock && (
             <div className="product-purchase">
-              <div className="size-selection">
-                <div className="size-header">
-                  <h3>{t('seleccionarTalla')}</h3>
-                  <button 
-                    className="size-guide-button"
-                    onClick={() => setShowSizeGuide(true)}
-                  >
-                    📏 {t('guiaTallas')}
-                  </button>
-                </div>
-                <div className="sizes">
-                  {product.sizes && product.sizes.length > 0 ? product.sizes.map(size => (
-                    <button
-                      key={size}
-                      className={`size-button ${selectedSize === size ? 'selected' : ''}`}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </button>
-                  )) : (
-                    <p>{language === 'es' ? 'No hay tallas disponibles' : 'No sizes available'}</p>
-                  )}
-                </div>
-              </div>
 
               <div className="quantity-selection">
                 <h3>{t('cantidad')}</h3>

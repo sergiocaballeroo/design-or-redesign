@@ -1,49 +1,33 @@
 import './StockIndicator.css'
 import { useTranslation } from '../utils/translations'
 
-const StockIndicator = ({ stock, lowStockThreshold = 5, language = 'es' }) => {
+const StockIndicator = ({ stock, lowStockThreshold = 3, language = 'es', className = '' }) => {
   const { t } = useTranslation(language)
   
-  if (stock === undefined || stock === null) return null
+  if (stock === undefined || stock === null || stock > lowStockThreshold) return null
   
-  const isLowStock = stock <= lowStockThreshold && stock > 0
   const isOutOfStock = stock <= 0
+  const isLowStock = stock <= lowStockThreshold && stock > 0
   
-  const getStockStatus = () => {
-    if (isOutOfStock) {
-      return {
-        text: t('agotado'),
-        className: 'out-of-stock',
-        icon: '❌'
-      }
-    }
-    
-    if (isLowStock) {
-      return {
-        text: `${t('ultimasPiezas')} (${stock})`,
-        className: 'low-stock',
-        icon: '⚠️'
-      }
-    }
-    
-    return {
-      text: t('disponible'),
-      className: 'in-stock',
-      icon: '✅'
-    }
+  if (isOutOfStock) {
+    return (
+      <div className={`stock-indicator out-of-stock ${className}`}>
+        <span className="stock-dot"></span>
+        <span className="stock-text">{t('agotado')}</span>
+      </div>
+    )
   }
   
-  const status = getStockStatus()
+  if (isLowStock) {
+    return (
+      <div className={`stock-indicator low-stock ${className}`}>
+        <span className="stock-dot"></span>
+        <span className="stock-text">Solo {stock} disponibles</span>
+      </div>
+    )
+  }
   
-  return (
-    <div className={`stock-indicator ${status.className}`}>
-      <span className="stock-icon">{status.icon}</span>
-      <span className="stock-text">{status.text}</span>
-      {isLowStock && (
-        <div className="urgency-pulse" />
-      )}
-    </div>
-  )
+  return null
 }
 
 export default StockIndicator
