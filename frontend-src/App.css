@@ -142,20 +142,22 @@ button:disabled {
   
   .admin-nav {
     padding: 0.8rem 1rem;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: stretch;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .nav-back-btn {
     font-size: 0.85rem;
     text-align: left;
+    flex: 1;
   }
   
   .logout-btn {
     font-size: 0.75rem;
     padding: 0.4rem 0.8rem;
-    align-self: flex-end;
+    flex-shrink: 0;
   }
 }
 
@@ -165,19 +167,23 @@ button:disabled {
   }
   
   .main-content {
-    padding: 0.8rem;
+    padding: 0.5rem;
   }
   
   .admin-nav {
-    padding: 0.6rem 0.8rem;
+    padding: 0.6rem 0.5rem;
+    gap: 0.5rem;
+    min-height: 50px;
   }
   
   .nav-back-btn {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    padding: 0.3rem 0;
   }
   
   .logout-btn {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem;
+    white-space: nowrap;
   }
 }
