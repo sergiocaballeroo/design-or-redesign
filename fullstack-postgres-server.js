@@ -195,11 +195,19 @@ app.get('/api/products/:id', async (req, res) => {
 // Add new product
 app.post('/api/products', authenticateToken, upload.array('images', 5), async (req, res) => {
   try {
-    const { name, price, description, sizes } = req.body;
+    const { name, price, description, sizes, images: manualImages } = req.body;
     
     let images = [];
+    
+    // Handle uploaded files
     if (req.files && req.files.length > 0) {
       images = req.files.map(file => `/uploads/${file.filename}`);
+    }
+    
+    // Handle manual S3 URLs (from admin input)
+    if (manualImages && manualImages.length > 0) {
+      const parsedManualImages = typeof manualImages === 'string' ? JSON.parse(manualImages) : manualImages;
+      images = [...images, ...parsedManualImages];
     }
     
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes || [];
@@ -229,7 +237,7 @@ app.post('/api/products', authenticateToken, upload.array('images', 5), async (r
 app.put('/api/products/:id', authenticateToken, upload.array('images', 5), async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, description, sizes, keepExistingImages } = req.body;
+    const { name, price, description, sizes, keepExistingImages, images: manualImages } = req.body;
     
     const existingResult = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
     
@@ -244,9 +252,20 @@ app.put('/api/products/:id', authenticateToken, upload.array('images', 5), async
       images = existingProduct.images ? JSON.parse(existingProduct.images) : [];
     }
     
+    // Handle uploaded files
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map(file => `/uploads/${file.filename}`);
       images = keepExistingImages === 'true' ? [...images, ...newImages] : newImages;
+    }
+    
+    // Handle manual S3 URLs (from admin input)
+    if (manualImages && manualImages.length > 0) {
+      const parsedManualImages = typeof manualImages === 'string' ? JSON.parse(manualImages) : manualImages;
+      if (keepExistingImages === 'true') {
+        images = [...images, ...parsedManualImages];
+      } else {
+        images = parsedManualImages;
+      }
     }
     
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes || [];
